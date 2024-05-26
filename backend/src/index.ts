@@ -9,8 +9,8 @@ const app = new Hono<{
   };
 }>();
 
-app.route("/api/v1/user",userRouter)
-app.route("/api/v1/user",blogRouter)
+app.route("/api/v1/users",userRouter)
+app.route("/api/v1/blogs",blogRouter)
 
 app.get("/", (c) => {
   return c.text("Hello Hono!");
