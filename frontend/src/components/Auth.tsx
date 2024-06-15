@@ -1,39 +1,60 @@
 import { SignUpInput } from "@harshitsharma1912/medium-common";
 import { ChangeEventHandler, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { BACKEND_URL } from "../config";
+import axios from "axios";
 
-const Auth = ({ type }: { type: "signup" | "signin" }) => {
+export const Auth = ({ type }: { type: "signup" | "signin" }) => {
+  const navigate = useNavigate();
   const [postInputs, setPostInput] = useState<SignUpInput>({
     name: "",
     userName: "",
     password: "",
   });
 
+  async function sendRequest(){
+   try {
+     const response = await axios.post(`${BACKEND_URL}/api/v1/users/${type === "signup" ? "signup" : "signin"}`,
+       postInputs
+     );
+     const token =await response.data;
+     localStorage.setItem("JwtToken",token);
+     navigate("/blogs");
+     
+   } catch (error) {
+      console.log("Error while SignUp/SignIn ",error);
+   }
+
+  }
   return (
     <div className="h-screen flex flex-col justify-center w-full">
       <div className="flex justify-center flex-col items-center">
         <div className="px-10">
           <div className="text-2xl font-extrabold">Create An Account</div>
           <p className="text-sm font-semibold text-neutral-500">
-            Already have an account ?
-            <Link to="signin" className="underline text-slate-700 pl-2">
-              Login
+            {type === "signin" ? "Don't have an account " : "Already have an account"}
+            <Link
+              to={type === "signin" ? "/signup" : "/signin"}
+              className="underline text-slate-700 pl-2"
+            >
+              {type === "signin" ? "Sign Up" : "Login"}
             </Link>
           </p>
         </div>
 
         <div className="pt-1">
-          <LabelledInput
-            onChange={(e) => {
-              setPostInput({
-                ...postInputs,
-                name: e.target.value,
-              });
-            }}
-            placeholder="Enter your name"
-            label="Name"
-          />
-
+          {type === "signup" ?
+            <LabelledInput
+              onChange={(e) => {
+                setPostInput({
+                  ...postInputs,
+                  name: e.target.value,
+                });
+              }}
+              placeholder="Enter your name"
+              label="Name"
+            />
+            : null}
           <LabelledInput
             onChange={(e) => {
               setPostInput({
@@ -56,6 +77,7 @@ const Auth = ({ type }: { type: "signup" | "signin" }) => {
             label="Password"
             type="password"
           />
+          <button onClick={sendRequest} type="button" className=" mt-5 w-full text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700">{type === "signup"?"Sign Up":"Login" } </button>
         </div>
       </div>
     </div>
