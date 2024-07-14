@@ -17,8 +17,10 @@ export const Auth = ({ type }: { type: "signup" | "signin" }) => {
      const response = await axios.post(`${BACKEND_URL}/api/v1/users/${type === "signup" ? "signup" : "signin"}`,
        postInputs
      );
-     const token =await response.data;
-     localStorage.setItem("JwtToken",token);
+     console.log("Api Reponse",response);
+     const token =await response.data.jwt;
+     localStorage.setItem("token",token);
+     console.log("Token set in the localstorage",token)
      navigate("/blogs");
      
    } catch (error) {

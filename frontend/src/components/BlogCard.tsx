@@ -1,4 +1,7 @@
+import { Link } from "react-router-dom";
+
 interface BlogcardProps {
+  id: number;
   authorName: string;
   publishedDate: string;
   title: string;
@@ -6,6 +9,7 @@ interface BlogcardProps {
 }
 
 const BlogCard = ({
+  id,
   authorName,
   publishedDate,
   title,
@@ -13,24 +17,32 @@ const BlogCard = ({
 }: BlogcardProps) => {
   return (
     <>
-      <div className="flex gap-x-0.5">
-        <div className="flex justify-center flex-col">
-          <AvatarLogo authorName={authorName} />
+      <Link to={`/blog/${id}`}>
+        <div className="border-black shadow-md border-b-2 ">
+          <div className="flex gap-x-0.5 align-middle items-center p-1">
+            <div className="flex justify-center flex-col pt-1">
+              <AvatarLogo authorName={authorName} />
+            </div>
+            <div className="text-sm font-bold pl-1 pt-1">{authorName}</div>
+            <div className="text-xs pt-1">&#9679;</div>
+            <div className="pt-1 font-thin text-slate-600">{publishedDate}</div>
+          </div>
+          <div className="p-1">
+            <div className="font-semibold text-xl">{title}</div>
+            <div className="font-thin text-md">
+              {content.slice(0, 100) + "....."}
+            </div>
+            <div className="text-slate-500 text-sm font-thin">{`${Math.ceil(
+              content.length / 100
+            )} minutes`}</div>
+          </div>
         </div>
-
-        <div className="text-xs font-semibold pl-2 mt-1 mr-2 ">
-          {authorName}
-        </div>
-        <div className="pl-1 font-thin text-slate-600">{publishedDate}</div>
-      </div>
-      <div>{title}</div>
-      <div>{content.slice(0, 100) + "....."}</div>
-      <div>{`${Math.ceil(content.length / 100)} minutes`}</div>
+      </Link>
     </>
   );
 };
 
-function AvatarLogo({ authorName }: { authorName: string }) {
+export function AvatarLogo({ authorName }: { authorName: string }) {
   const getInitials = (name: string) => {
     let words = name.split(" ");
     let initials = "";
@@ -42,7 +54,7 @@ function AvatarLogo({ authorName }: { authorName: string }) {
   const initials = getInitials(authorName);
   return (
     <>
-      <div className="relative inline-flex items-center justify-center w-5 h-5 overflow-hidden bg-gray-100 rounded-full dark:bg-gray-600 text-xs">
+      <div className="relative inline-flex items-center justify-center w-6 h-6 overflow-hidden bg-gray-100 rounded-full dark:bg-gray-600 text-xs">
         <span className="font-semibold text-gray-600 dark:text-gray-300">
           {initials}
         </span>
